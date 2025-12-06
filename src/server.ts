@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { Pool } from "pg";
 import config from "./config/index.js";
 import initDB from "./config/db.js";
+import { userRoutes } from "./modules/users/routes/user.routes.js";
 
 
 const app = express();
@@ -14,9 +15,8 @@ initDB().catch((err) => {
     process.exit(1);
 });
 
-app.get("/", (req: Request, res: Response) => {
-    res.send("Vehicle Rental System API is running");
-});
+app.use("/api/v1/users", userRoutes);
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
