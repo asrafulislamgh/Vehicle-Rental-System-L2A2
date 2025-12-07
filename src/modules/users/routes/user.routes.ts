@@ -10,13 +10,13 @@ const router = express.Router();
 router.get("/", auth(Role.admin), userController.getAllUsers);
 
 // get user by id
-router.get("/:userId", userController.getUserbyId);
+router.get("/:userId", auth(Role.admin), userController.getUserbyId);
 
 // update user by id
-router.put("/:userId", userController.updateUser);
+router.put("/:userId", auth(Role.admin, Role.customer), userController.updateUser);
 
 // delete user by id
-router.delete("/:userId", userController.deleteUser);
+router.delete("/:userId", auth(Role.admin), userController.deleteUser);
 
 
 

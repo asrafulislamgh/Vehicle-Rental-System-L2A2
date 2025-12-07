@@ -12,7 +12,9 @@ const getUserbyId = async (id: number) => {
     const result = await pool.query(`
         SELECT * FROM users WHERE id = $1
     `, [id]);
-    return result.rows[0];
+    const { created_at, ...rest } = result.rows[0]
+    const filteredResult = rest;
+    return filteredResult;
 }
 
 const updateUser = async (id: number, payload: Record<string, unknown>) => {
