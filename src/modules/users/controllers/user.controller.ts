@@ -8,7 +8,7 @@ const getAllUsers = async (req: Request, res: Response) => {
         const result = await userServices.getAllusers();
         res.status(200).json({
             success: true,
-            message: "User registered successfully",
+            message: "Users retrieved successfully",
             data: result,
         });
     } catch (error: any) {

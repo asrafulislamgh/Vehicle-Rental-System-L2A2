@@ -3,6 +3,7 @@ import { Pool } from "pg";
 import config from "./config/index.js";
 import initDB from "./config/db.js";
 import { userRoutes } from "./modules/users/routes/user.routes.js";
+import { authRoutes } from "./modules/auth/auth.route.js";
 
 
 const app = express();
@@ -16,6 +17,8 @@ initDB().catch((err) => {
 });
 
 app.use("/api/v1/users", userRoutes);
+
+app.use("/api/v1/auth", authRoutes);
 
 
 app.listen(PORT, () => {
