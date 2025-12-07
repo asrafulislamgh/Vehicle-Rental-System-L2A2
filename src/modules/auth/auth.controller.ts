@@ -28,8 +28,24 @@ const signin = async (req: Request, res: Response) => {
     }
 };
 
+
 const signup = async (req: Request, res: Response) => {
-};
+    const body = req.body;
+
+    try {
+        const result = await authServices.signup(body);
+        res.status(201).json({
+            success: true,
+            message: "User created successfully",
+            data: result.rows[0],
+        });
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
 
 export const authController = {
     signin,

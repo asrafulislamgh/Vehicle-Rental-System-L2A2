@@ -6,7 +6,6 @@ const auth = (...rest: any[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
             const token = req.headers.authorization?.split(" ")[1];
-            console.log("Auth Token:", token);
             if (!token) {
                 return res.status(401).json({
                     success: false,

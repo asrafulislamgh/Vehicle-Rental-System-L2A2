@@ -19,23 +19,6 @@ const getAllUsers = async (req: Request, res: Response) => {
     }
 }
 
-const createUser = async (req: Request, res: Response) => {
-    const body = req.body;
-
-    try {
-        const result = await userServices.createUser(body);
-        res.status(201).json({
-            success: true,
-            message: "User created successfully",
-            data: result.rows[0],
-        });
-    } catch (error: any) {
-        res.status(500).json({
-            success: false,
-            message: error.message,
-        });
-    }
-}
 
 const getUserbyId = async (req: Request, res: Response) => {
     const id = Number(req.params.userId);
@@ -100,7 +83,6 @@ const deleteUser = async (req: Request, res: Response) => {
 
 
 export const userController = {
-    createUser,
     getAllUsers,
     getUserbyId,
     updateUser,
