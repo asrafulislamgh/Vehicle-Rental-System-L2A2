@@ -122,12 +122,6 @@ const updateBooking = async (req: Request, res: Response) => {
             message: "Invalid status. Only 'cancelled' or 'returned' allowed."
         });
     }
-    if (role === Role.admin && status === Status.cancelled) {
-        return res.status(403).json({
-            success: false,
-            message: "Admin can only return bookings. Only customer can mark as cancelled."
-        })
-    }
     try {
         const result = await bookingsServices.updateBooking(id, status);
         const vehicle_info = result.vehicle_info;

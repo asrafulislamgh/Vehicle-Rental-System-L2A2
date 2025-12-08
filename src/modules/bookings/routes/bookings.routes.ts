@@ -10,7 +10,7 @@ router.post("/", auth(Role.admin, Role.customer), bookingsController.createBooki
 
 // get all bookings
 
-router.get("/", auth(Role.admin), bookingsController.getAllBookings);
+router.get("/", auth(Role.admin, Role.customer), bookingsController.getAllBookings);
 
 // get booking by id
 router.get("/:bookingId", auth(Role.admin), bookingsController.getBooking);
