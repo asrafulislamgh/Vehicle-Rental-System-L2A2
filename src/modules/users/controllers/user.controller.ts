@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { pool } from "../../../config/db.js";
 import { userServices } from "../services/user.services.js";
+import { Role } from "../../../constants/constants.js";
 
 
 const getAllUsers = async (req: Request, res: Response) => {
@@ -14,7 +15,8 @@ const getAllUsers = async (req: Request, res: Response) => {
     } catch (error: any) {
         res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message,
+            errors: error
         });
     }
 }
@@ -40,6 +42,7 @@ const getUserbyId = async (req: Request, res: Response) => {
         res.status(500).json({
             success: false,
             message: error.message,
+            errors: error
         });
     }
 }
@@ -47,6 +50,14 @@ const getUserbyId = async (req: Request, res: Response) => {
 const updateUser = async (req: Request, res: Response) => {
     const id = Number(req.params.userId);
     const body = req.body;
+    const userId = req.user?.id;
+    const role = req.user?.role;
+    if (role !== Role.admin && id !== userId) {
+        return res.status(400).json({
+            success: false,
+            message: "You can only update your own data."
+        })
+    }
     try {
         const result = await userServices.updateUser(id, body);
         res.status(200).json({
@@ -58,6 +69,7 @@ const updateUser = async (req: Request, res: Response) => {
         res.status(500).json({
             success: false,
             message: error.message,
+            errors: error
         })
 
     }
@@ -83,6 +95,7 @@ const deleteUser = async (req: Request, res: Response) => {
         res.status(500).json({
             success: false,
             message: error.message,
+            errors: error
         });
     }
 };

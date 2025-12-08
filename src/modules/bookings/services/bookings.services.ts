@@ -11,14 +11,30 @@ const createBooking = async (payload: Record<string, unknown>) => {
        `, [customer_id, vehicle_id, rent_start_date, rent_end_date, total_price, Status.active]);
     updateVehiclaeStatus(vehicle_id as string, 'booked');
     const { created_at, ...rest } = result.rows[0]
-    const filteredResult = rest;
+    const vehicle_info: any = await getVehicleInfo(vehicle_id)
+    const { vehicle_name, daily_rent_price } = vehicle_info.rows[0]
+    const filteredResult = { ...rest, vehicle: { vehicle_name, daily_rent_price } };
     return filteredResult;
 }
 
 const getAllBookings = async () => {
-    const result: any = await pool.query("SELECT * FROM bookings");
-    const filteredResult = result.rows.map(({ created_at, ...rest }: any) => rest);
-    return filteredResult;
+    const query = `
+        SELECT 
+            b.*,
+            c.name AS customer_name,
+            c.email AS customer_email,
+            v.vehicle_name,
+            v.registration_number,
+            v.type AS vehicle_type
+        FROM bookings b
+        JOIN users c ON b.customer_id = c.id
+        JOIN vehicles v ON b.vehicle_id = v.id
+        ORDER BY b.id;
+    `;
+    const result: any = await pool.query(query);
+    // const filteredResult = result.rows.map(({ created_at, ...rest }: any) => rest);
+    // return filteredResult;
+    return result.rows
 }
 
 
@@ -26,6 +42,10 @@ const getBookingbyId = async (id: number) => {
     const result = await pool.query(`
         SELECT * FROM bookings WHERE id = $1
     `, [id]);
+
+    if (result.rows.length === 0) {
+        return null;
+    }
     const { created_at, ...rest } = result.rows[0]
     const filteredResult = rest;
     return filteredResult;
@@ -42,9 +62,7 @@ const updateBooking = async (id: number, status: string) => {
     };
     let vehicle_info = {};
     if (status === 'returned') {
-        const vehicle_result = await pool.query(`
-            SELECT * FROM vehicles WHERE id = $1
-        `, [result.rows[0].vehicle_id]);
+        const vehicle_result = await getVehicleInfo(result.rows[0].vehicle_id)
         const { availability_status } = vehicle_result.rows[0];
         vehicle_info = { availability_status }
     }
@@ -85,6 +103,13 @@ const updateVehiclaeStatus = async (vehicle_id: string, status: string) => {
         UPDATE vehicles SET availability_status = $1 WHERE id = $2
     `, [status, vehicle_id]);
     return result;
+}
+
+const getVehicleInfo = async (vehicle_id: any) => {
+    const vehicle_result = await pool.query(`
+            SELECT * FROM vehicles WHERE id = $1
+        `, [vehicle_id]);
+    return vehicle_result;
 }
 
 
