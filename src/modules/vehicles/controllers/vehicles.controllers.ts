@@ -85,10 +85,18 @@ const deleteVehicle = async (req: Request, res: Response) => {
     const id = Number(req.params.vehicleId);
     try {
         const result = await vehiclesServices.deleteVehicle(id);
-        res.status(200).json({
-            success: true,
-            message: "Vehicle deleted successfully"
-        });
+        if (result?.rowCount) {
+            res.status(200).json({
+                success: true,
+                message: "Vehicle deleted successfully"
+            });
+        } else {
+            res.status(400).json({
+                success: false,
+                message: "Can not be deleted! This vehicle is booked!"
+            })
+        }
+
     } catch (error: any) {
         res.status(500).json({
             success: false,

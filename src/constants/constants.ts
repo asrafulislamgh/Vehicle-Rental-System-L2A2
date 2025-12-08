@@ -3,4 +3,12 @@ const Role = {
     customer: "customer",
 } as const;
 
-export { Role };
+const Status = {
+    available: "available",
+    booked: "booked",
+    cancelled: "cancelled",
+    returned: "returned",
+    active: "active",
+} as const;
+
+export { Role, Status };

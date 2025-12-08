@@ -28,6 +28,12 @@ const updateUser = async (id: number, payload: Record<string, unknown>) => {
 }
 
 const deleteUser = async (id: number) => {
+    const user_status_on_booking = await pool.query(`
+        SELECT * FROM bookings WHERE customer_id = $1 AND status = $2
+        `, [id, "active"])
+    if (user_status_on_booking.rows.length) {
+        return
+    }
     const result = await pool.query(`
         DELETE FROM users WHERE id = $1 RETURNING *
     `, [id]);

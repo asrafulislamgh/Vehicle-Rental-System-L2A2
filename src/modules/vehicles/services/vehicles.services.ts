@@ -3,6 +3,7 @@ import { pool } from "../../../config/db.js";
 
 const createVehicle = async (payload: Record<string, unknown>) => {
     const { vehicle_name, type, registration_number, daily_rent_price, availability_status } = payload;
+    console.log("Creating vehicle with data:", payload);
     const result = await pool.query(`
         INSERT INTO vehicles (vehicle_name, type, registration_number, daily_rent_price, availability_status)
         VALUES ($1, $2, $3, $4, $5) RETURNING *
@@ -44,6 +45,13 @@ const updateVehicle = async (id: number, payload: Record<string, unknown>) => {
 }
 
 const deleteVehicle = async (id: number) => {
+    const vehicle_status_on_booking = await pool.query(`
+        SELECT * FROM bookings WHERE vehicle_id = $1 AND status = $2
+        `, [id, "active"])
+    console.log('checking vehicle status', vehicle_status_on_booking.rows)
+    if (vehicle_status_on_booking.rows.length) {
+        return
+    }
     const result = await pool.query(`
         DELETE FROM vehicles WHERE id = $1 RETURNING *
     `, [id]);
