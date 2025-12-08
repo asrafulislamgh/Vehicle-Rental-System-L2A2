@@ -1,6 +1,6 @@
 # Vehicle Rental System
 
-**Live URL:** [https://vehicle-rental-system-1.vercel.app/api/v1/](https://vehicle-rental-system-1.vercel.app/api/v1/)
+**Live URL:** [https://vehicle-rental-system-1.vercel.app/](https://vehicle-rental-system-1.vercel.app/)
 
 ---
 
